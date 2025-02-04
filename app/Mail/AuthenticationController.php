@@ -6,8 +6,63 @@ use Illuminate\Http\Request;
 use App\ResponseFormatter;
 use App\Models\User;
 
-class RouteHandler extends Controller
+class AuthenticationController extends Controller
 {
+    public function authGoogle()
+    {
+        $validator = \Validator::make(request()->all(), [
+            'token' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return ResponseFormatter::error(400, $validator->errors());
+        }
+
+        $client = new \Google_Client(['client_id' => config('services.google.client_id')]);
+        $payload = $client->verifyIdToken(request()->token);
+        if ($payload) {
+            $userId = $payload['sub'];
+            $name = $payload['name'];
+            $email = $payload['email'];
+
+            $user = User::where('social_media_provider', 'google')->where('social_media_id', $userId)->first();
+            if (!is_null($user)) {
+                $token = $user->createToken(config('app.name'))->plainTextToken;
+
+                return ResponseFormatter::success([
+                    'token' => $token
+                ]);
+            }
+
+            $user = User::where('email', $email)->first();
+            if (!is_null($user)) {
+                $user->update([
+                    'social_media_provider' => 'google',
+                    'social_media_id' => $userId
+                ]);
+            } else {
+                $user = User::create([
+                    'name' => $name,
+                    'email' => $email,
+                    'social_media_provider' => 'google',
+                    'social_media_id' => $userId
+                ]);
+            }
+
+            $token = $user->createToken(config('app.name'))->plainTextToken;
+
+            return ResponseFormatter::success([
+                'token' => $token
+            ]);
+
+
+        } else {
+            return ResponseFormatter::error(400, null, [
+                'Invalid token!'
+            ]);
+        }
+    }
+
     public function register()
     {
         $validator = \Validator::make(request()->all(),[
@@ -124,11 +179,10 @@ class RouteHandler extends Controller
         return ResponseFormatter::error(400, 'Invalid OTP');
     }
 
-    
     public function login()
     {
         $validator = \Validator::make(request()->all(), [
-            'email' => 'required|email',
+            'phone_email' => 'required',
             'password' => 'required'
         ]);
 
@@ -136,7 +190,7 @@ class RouteHandler extends Controller
             return ResponseFormatter::error(400, $validator->errors());
         }
 
-        $user = User::where('email', request()->email)->first();
+        $user = User::where('email', request()->phone_email)->orWhere('phone', request()->phone_email)->first();
         if (is_null($user)) {
             return ResponseFormatter::error(400, null, [
                 'User tidak ditemukan'
@@ -157,10 +211,4 @@ class RouteHandler extends Controller
         ]);
     }
 
-    public function profile()
-    {
-        $user = request()->user()->only(['name', 'email']);
-
-        return ResponseFormatter::success($user);
-    }
 }
