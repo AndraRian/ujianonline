@@ -4,6 +4,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RouteHandler;
 use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ModulController;
+use App\Http\Controllers\TopikController;
 
 
 Route::post('/register', [RouteHandler::class, 'register']);
@@ -23,5 +26,21 @@ Route::prefix('forgot-password')->group(function(){
 Route::middleware('auth:sanctum')->group(function(){
 
     Route::get('/user', [RouteHandler::class, 'profile']);
+
+    Route::prefix('modul')->group(function(){
+        Route::get('/', [ModulController::class, 'index']);
+        Route::get('/{id}', [ModulController::class, 'show']);
+        Route::post('/', [ModulController::class, 'store']);
+        Route::patch('/{id}', [ModulController::class, 'update']);
+        Route::delete('/{id}', [ModulController::class, 'destroy']);
+    });
+
+    Route::prefix('topik')->group(function(){
+        Route::get('/', [TopikController::class, 'index']);
+        Route::get('/{id}', [TopikController::class, 'show']);
+        Route::post('/', [TopikController::class, 'store']);
+        Route::patch('/{id}', [TopikController::class, 'update']);
+        Route::delete('/{id}', [TopikController::class, 'destroy']);
+    });
 
 });
