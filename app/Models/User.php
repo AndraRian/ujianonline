@@ -60,4 +60,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(\App\Models\Topik::class);
     }
+
+    public function grups()
+    {
+        return $this->hasMany(\App\Models\Grup::class);
+    }
 }

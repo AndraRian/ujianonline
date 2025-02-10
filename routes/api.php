@@ -7,6 +7,8 @@ use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ModulController;
 use App\Http\Controllers\TopikController;
+use App\Http\Controllers\GrupController;
+use App\Http\Controllers\ParticipantController;
 
 
 Route::post('/register', [RouteHandler::class, 'register']);
@@ -41,6 +43,22 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::post('/', [TopikController::class, 'store']);
         Route::patch('/{id}', [TopikController::class, 'update']);
         Route::delete('/{id}', [TopikController::class, 'destroy']);
+    });
+
+    Route::prefix('grup')->group(function(){
+        Route::get('/', [GrupController::class, 'index']);
+        Route::get('/{id}', [GrupController::class, 'show']);
+        Route::post('/', [GrupController::class, 'store']);
+        Route::patch('/{id}', [GrupController::class, 'update']);
+        Route::delete('/{id}', [GrupController::class, 'destroy']);
+    });
+
+    Route::prefix('participant')->group(function(){
+        Route::get('/', [ParticipantController::class, 'index']);
+        Route::get('/{id}', [ParticipantController::class, 'show']);
+        Route::post('/', [ParticipantController::class, 'store']);
+        Route::patch('/{id}', [ParticipantController::class, 'update']);
+        Route::delete('/{id}', [ParticipantController::class, 'destroy']);
     });
 
 });

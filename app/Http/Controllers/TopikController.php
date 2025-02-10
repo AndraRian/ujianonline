@@ -60,7 +60,7 @@ class TopikController extends Controller
             return ResponseFormatter::error(400, $validator->errors());
         }
 
-        $topiks = $topiks = \App\Models\Topik::find($id);
+        $topiks = \App\Models\Topik::find($id);
         $topiks->update([
             'name' => request()->name,
             'detail' => request()->detail,

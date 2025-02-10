@@ -57,7 +57,7 @@ class ModulController extends Controller
             return ResponseFormatter::error(400, $validator->errors());
         }
 
-        $moduls = $moduls = \App\Models\Modul::find($id);
+        $moduls = \App\Models\Modul::find($id);
         $moduls->update([
             'name' => request()->name,
             'description' => request()->description,
