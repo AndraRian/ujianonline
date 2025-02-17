@@ -9,7 +9,7 @@ use App\Http\Controllers\ModulController;
 use App\Http\Controllers\TopikController;
 use App\Http\Controllers\GrupController;
 use App\Http\Controllers\ParticipantController;
-
+use App\Http\Controllers\QuestionController;
 
 Route::post('/register', [RouteHandler::class, 'register']);
 Route::post('/resend-otp', [RouteHandler::class, 'resendOtp']);
@@ -59,6 +59,14 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::post('/', [ParticipantController::class, 'store']);
         Route::patch('/{id}', [ParticipantController::class, 'update']);
         Route::delete('/{id}', [ParticipantController::class, 'destroy']);
+    });
+
+    Route::prefix('question')->group(function(){
+        Route::get('/', [QuestionController::class, 'index']);
+        Route::get('/{id}', [QuestionController::class, 'show']);
+        Route::post('/', [QuestionController::class, 'store']);
+        Route::patch('/{id}', [QuestionController::class, 'update']);
+        Route::delete('/{id}', [QuestionController::class, 'destroy']);
     });
 
 });

@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Models;
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -27,7 +26,7 @@ class Topik extends Model
             'id' => $this->id,
             'modul' => $this->modul->only(['id', 'name']),
             'name' => $this->name,
-            'description' => $this->description,
+            'detail' => $this->detail,
             'is_active' => (boolean) $this->is_active,
         ];
     }

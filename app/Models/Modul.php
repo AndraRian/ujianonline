@@ -22,6 +22,7 @@ class Modul extends Model
             'name' => $this->name,
             'description' => $this->description,
             'is_active' => (boolean) $this->is_active,
+
         ];
     }
 
