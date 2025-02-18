@@ -32,13 +32,14 @@ class Question extends Model
     {
         return $this->belongsTo(\App\Models\Topik::class);
     }
-
+    
     public function getApiResponseAttribute()
     {
         return [
             'id' => $this->id,
             'modul' => $this->modul->only(['id', 'name']), 
             'topik' => $this->topik->only(['id', 'name']),
+            'question' => $this->question,
             'answer' => $this->answer,
             'timer' => $this->timer,
             'inline_answers' => $this->inline_answers,
