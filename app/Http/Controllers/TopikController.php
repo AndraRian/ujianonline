@@ -30,7 +30,7 @@ class TopikController extends Controller
             'modul_id' => 'required|exists:moduls,id',
             'name' => 'required|string',
             'detail' => 'nullable|string',
-            'is_active' => 'required|string',
+            'is_active' => 'required|in:true,false',
         ]);
 
         if ($validator->fails()) {
@@ -53,7 +53,7 @@ class TopikController extends Controller
         $validator = \Validator::make(request()->all(), [
             'name' => 'required|string',
             'detail' => 'nullable|string',
-            'is_active' => 'required|string',
+            'is_active' => 'required|in:true,false',
         ]);
 
         if ($validator->fails()) {
@@ -73,6 +73,13 @@ class TopikController extends Controller
     public function destroy(int $id)
     {
         $topiks = \App\Models\Topik::find($id);
+
+        if ($topiks->is_active == true) {
+            return ResponseFormatter::error(400, $topiks->api_response, [
+                'Topik Sedang Active!'
+            ]);
+        }
+
         $topiks->delete();
 
         return ResponseFormatter::success($topiks->api_response, 'Topik deleted successfully', 204);

@@ -29,8 +29,8 @@ class AnswerController extends Controller
         $validator = \Validator::make(request()->all(), [
             'question_id' => 'required|exists:questions,id',
             'detail' => 'required|string',
-            'is_true' => 'required|string',
-            'is_active' => 'required|string',
+            'is_true' => 'required|in:true,false',
+            'is_active' => 'required|in:true,false',
         ]);
 
         if ($validator->fails()) {
@@ -52,8 +52,8 @@ class AnswerController extends Controller
     {
         $validator = \Validator::make(request()->all(), [
             'detail' => 'required|string',
-            'is_true' => 'required|string',
-            'is_active' => 'required|string',
+            'is_true' => 'required|in:true,false',
+            'is_active' => 'required|in:true,false',
         ]);
 
         if ($validator->fails()) {
@@ -73,6 +73,13 @@ class AnswerController extends Controller
     public function destroy(int $id)
     {
         $answers = \App\Models\Answer::find($id);
+
+        if ($answers->is_active == true) {
+            return ResponseFormatter::error(400, $answers->api_response, [
+                'Answer Sedang Active!'
+            ]);
+        }
+
         $answers->delete();
 
         return ResponseFormatter::success($answers->api_response, 'Answer deleted successfully', 204);

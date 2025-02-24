@@ -29,7 +29,7 @@ class ModulController extends Controller
         $validator = \Validator::make(request()->all(), [
             'name' => 'required|string',
             'description' => 'nullable|string',
-            'is_active' => 'required|string',
+            'is_active' => 'required|in:true,false',
         ]);
 
         if ($validator->fails()) {
@@ -50,7 +50,7 @@ class ModulController extends Controller
         $validator = \Validator::make(request()->all(), [
             'name' => 'required|string',
             'description' => 'nullable|string',
-            'is_active' => 'required|string',
+            'is_active' => 'required|in:true,false',
         ]);
 
         if ($validator->fails()) {
@@ -70,6 +70,13 @@ class ModulController extends Controller
     public function destroy(int $id)
     {
         $moduls = \App\Models\Modul::find($id);
+
+        if ($moduls->is_active == true) {
+            return ResponseFormatter::error(400, $moduls->api_response, [
+                'Modul Sedang Active!'
+            ]);
+        }
+
         $moduls->delete();
 
         return ResponseFormatter::success($moduls->api_response, 'Modul deleted successfully', 204);

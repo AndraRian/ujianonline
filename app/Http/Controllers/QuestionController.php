@@ -34,11 +34,11 @@ class QuestionController extends Controller
             'timer' => 'nullable|numeric',
             'inline_answer' => 'nullable|string',
             'audio' => 'nullable|string',
-            'audio_play' => 'required|string',
-            'auto_next' => 'required|string',
-            'type' => 'required|numeric',
-            'difficulty' => 'required|numeric',
-            'is_active' => 'required|string',
+            'audio_play' => 'required|in:true,false',
+            'auto_next' => 'required|in:true,false',
+            'type' => 'required|in:1,2,3',
+            'difficulty' => 'required|in:1,2,3,4,5',
+            'is_active' => 'required|in:true,false',
         ]);
 
         if ($validator->fails()) {
@@ -74,11 +74,11 @@ class QuestionController extends Controller
             'timer' => 'nullable|numeric',
             'inline_answer' => 'nullable|string',
             'audio' => 'nullable|string',
-            'audio_play' => 'required|string',
-            'auto_next' => 'required|string',
-            'type' => 'required|numeric',
-            'difficulty' => 'required|numeric',
-            'is_active' => 'required|string',
+            'audio_play' => 'required|in:true,false',
+            'auto_next' => 'required|in:true,false',
+            'type' => 'required|in:1,2,3',
+            'difficulty' => 'required|in:1,2,3,4,5',
+            'is_active' => 'required|in:true,false',
         ]);
 
         if ($validator->fails()) {
@@ -106,6 +106,13 @@ class QuestionController extends Controller
     public function destroy(int $id)
     {
         $questions = \App\Models\Question::find($id);
+
+        if ($questions->is_active == true) {
+            return ResponseFormatter::error(400, $questions->api_response, [
+                'Question Sedang Active!'
+            ]);
+        }
+
         $questions->delete();
 
         return ResponseFormatter::success($questions->api_response, 'Question deleted successfully', 204);
